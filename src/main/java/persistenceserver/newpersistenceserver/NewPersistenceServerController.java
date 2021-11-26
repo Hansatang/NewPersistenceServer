@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import persistenceserver.DatabaseModels.*;
 import persistenceserver.Model.Membership;
-import persistenceserver.Services.PersistenceService;
+import persistenceserver.Model.User;
 import persistenceserver.jparepositories.*;
 
 import java.util.List;
@@ -27,12 +27,8 @@ public class NewPersistenceServerController {
     private NoteRepository noteRepository;
     private UserRepository userRepository;
 
-    private PersistenceService persistenceService;
-
-
     @Autowired
     public NewPersistenceServerController(GroupRepository groupRepository, GroupMembersRepository groupMembersRepository, InvitationRepository invitationRepository, NoteRepository noteRepository, UserRepository userRepository) {
-        this.persistenceService = new PersistenceService();
         this.groupRepository = groupRepository;
         this.groupMembersRepository = groupMembersRepository;
         this.invitationRepository = invitationRepository;
@@ -51,69 +47,123 @@ public class NewPersistenceServerController {
     }
 
     @GetMapping("/group/{id}")
-    public Optional<GroupModel> getGroup(@PathVariable(value = "id") long id) {
-        return groupRepository.findById(id);
+    public ResponseEntity<GroupModel> getGroup(@PathVariable(value = "id") long id) {
+        try {
+            Optional<GroupModel> groupModel = groupRepository.findById(id);
+            return new ResponseEntity<>(groupModel.get(), HttpStatus.OK);
+        } catch (Exception e) {
+            System.out.println("hey");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     @PutMapping("/group")
-    public GroupModel createGroup(@RequestBody String json) {
-        GroupModel groupModel = new GroupModel(json);
-        return groupRepository.save(groupModel);
+    public ResponseEntity<GroupModel> createGroup(@RequestBody String json) {
+        try {
+            GroupModel groupModelFromBody = new GroupModel(json);
+            GroupModel groupModel = groupRepository.save(groupModelFromBody);
+            return new ResponseEntity<>(groupModel, HttpStatus.OK);
+        } catch (Exception e) {
+            System.out.println("hey");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/userlist/{id}")
-    public List<Membership> getUserList(@PathVariable(value = "id") int id) {
-        List<GroupMembersModel> groupMembersModelList = groupMembersRepository.findByGroupId(id);
-        List<Membership> membershipList = groupMembersModelList.stream().map(a ->
-                new Membership(a.getId(), a.getUserModel().getId(), a.getGroupId(), a.getUserModel().getUsername())).collect(Collectors.toList());
-        return membershipList;
+    public ResponseEntity<List<Membership>> getUserList(@PathVariable(value = "id") int id) {
+        try {
+            List<GroupMembersModel> groupMembersModelList = groupMembersRepository.findByGroupId(id);
+            List<Membership> membershipList = groupMembersModelList.stream().map(a ->
+                    new Membership(a.getId(), a.getUserModel().getId(), a.getGroupId(), a.getUserModel().getUsername())).collect(Collectors.toList());
+            return new ResponseEntity<>(membershipList, HttpStatus.OK);
+        } catch (Exception e) {
+            System.out.println("hey");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
-
 
     @PostMapping("/user")
-    public Optional<UserModel> ValidateUser(@RequestBody String json) {
-        return userRepository.findByUsername(json);
+    public ResponseEntity<UserModel> ValidateUser(@RequestBody String json) {
+        try {
+            Optional<UserModel> userModel = userRepository.findByUsername(json);
+            return new ResponseEntity<>(userModel.get(), HttpStatus.OK);
+        } catch (Exception e) {
+            System.out.println("hey");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
-
 
     @PostMapping("/unregisteruser")
-    public UserModel registerUser(@RequestBody String json) {
-        UserModel userModel = gson.fromJson(json, UserModel.class);
-        return userRepository.save(userModel);
+    public ResponseEntity<UserModel> registerUser(@RequestBody String json) {
+        try {
+            UserModel userModelFromBody = gson.fromJson(json, UserModel.class);
+            UserModel userModel = userRepository.save(userModelFromBody);
+            return new ResponseEntity<>(userModel, HttpStatus.OK);
+        } catch (Exception e) {
+            System.out.println("hey");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
-
     @PostMapping("/note")
-    public NoteModel addNote(@RequestBody String json) {
+    public ResponseEntity<NoteModel> addNote(@RequestBody String json) {
         System.out.println("It's working AddNote");
-        NoteModel noteModel = gson.fromJson(json, NoteModel.class);
-        return noteRepository.save(noteModel);
+        try {
+            NoteModel noteModelFromBody = gson.fromJson(json, NoteModel.class);
+            NoteModel noteModel = noteRepository.save(noteModelFromBody);
+            return new ResponseEntity<>(noteModel, HttpStatus.OK);
+        } catch (Exception e) {
+            System.out.println("hey");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/note")
-    public NoteModel editNote(@RequestBody String json) {
+    public ResponseEntity<NoteModel> editNote(@RequestBody String json) {
         System.out.println("EDIT BABYYY");
-        NoteModel noteModel = gson.fromJson(json, NoteModel.class);
-        return noteRepository.save(noteModel);
+        try {
+            NoteModel noteModelFromBody = gson.fromJson(json, NoteModel.class);
+            NoteModel noteModel = noteRepository.save(noteModelFromBody);
+            return new ResponseEntity<>(noteModel, HttpStatus.OK);
+        } catch (Exception e) {
+            System.out.println("hey");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
-
     @GetMapping("/note/{groupId}")
-    public List<NoteModel> getNote(@PathVariable(value = "groupId") long groupId) {
-        return noteRepository.findByGroupModel_Id(groupId);
+    public ResponseEntity<List<NoteModel>> getNote(@PathVariable(value = "groupId") long groupId) {
+        try {
+            List<NoteModel> noteModelList = noteRepository.findByGroupModel_Id(groupId);
+            return new ResponseEntity<>(noteModelList, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/invitation")
-    public InvitationModel addInvitation(@RequestBody String json) {
+    public ResponseEntity<InvitationModel> addInvitation(@RequestBody String json) {
         System.out.println("its working post invitation");
-        InvitationModel invitationModel = gson.fromJson(json, InvitationModel.class);
-        return invitationRepository.save(invitationModel);
+        try {
+            InvitationModel invitationModelFromBody = gson.fromJson(json, InvitationModel.class);
+            InvitationModel invitationModel = invitationRepository.save(invitationModelFromBody);
+            return new ResponseEntity<>(invitationModel, HttpStatus.OK);
+        } catch (Exception e) {
+            System.out.println("hey");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/invitation/{id}")
-    public List<InvitationModel> getInvitationList(@PathVariable(value = "id") long id) {
+    public ResponseEntity<List<InvitationModel>> getInvitationList(@PathVariable(value = "id") long id) {
         System.out.println("Aleeeoooo");
-        return invitationRepository.findByInvitee_Id(id);
+        try {
+            List<InvitationModel> invitationModelList = invitationRepository.findByInvitee_Id(id);
+            return new ResponseEntity<>(invitationModelList, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
 
@@ -161,9 +211,17 @@ public class NewPersistenceServerController {
     }
 
 
-//    @PostMapping("/user/{user_id}")
-//    public synchronized String EditUser(@RequestBody String json, @PathVariable(value = "user_id") int user_id) {
-//        System.out.println("It's working Validate");
-//        return persistenceService.editUser(json, user_id);
-//    }
+    @PostMapping("/user/{user_id}")
+    public ResponseEntity<UserModel> EditUser(@RequestBody String json, @PathVariable(value = "user_id") int user_id) {
+
+        System.out.println("It's working Validate");
+        try {
+            UserModel temp = gson.fromJson(json, UserModel.class);
+            UserModel userModel = userRepository.save(temp);
+            return new ResponseEntity<>(userModel, HttpStatus.OK);
+        } catch (Exception e) {
+            System.out.println("hey");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 }
