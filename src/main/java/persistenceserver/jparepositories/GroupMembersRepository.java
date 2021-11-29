@@ -15,4 +15,6 @@ public interface GroupMembersRepository extends JpaRepository<GroupMembersModel,
     List<GroupMembersModel> findAll();
 
     List<GroupMembersModel> findByGroupId(int groupModelId);
+
+    List<GroupMembersModel> findByUserModel_Id(int groupModelId);
 }

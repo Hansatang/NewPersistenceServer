@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import persistenceserver.DatabaseModels.*;
 import persistenceserver.Model.Membership;
-import persistenceserver.Model.User;
 import persistenceserver.jparepositories.*;
 
 import java.util.List;
@@ -21,14 +20,16 @@ public class NewPersistenceServerController {
 
     private static final Gson gson = new Gson();
 
-    private GroupRepository groupRepository;
-    private GroupMembersRepository groupMembersRepository;
-    private InvitationRepository invitationRepository;
-    private NoteRepository noteRepository;
-    private UserRepository userRepository;
+    private final GroupRepository groupRepository;
+    private final GroupMembersRepository groupMembersRepository;
+    private final InvitationRepository invitationRepository;
+    private final NoteRepository noteRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public NewPersistenceServerController(GroupRepository groupRepository, GroupMembersRepository groupMembersRepository, InvitationRepository invitationRepository, NoteRepository noteRepository, UserRepository userRepository) {
+    public NewPersistenceServerController(GroupRepository groupRepository, GroupMembersRepository groupMembersRepository,
+                                          InvitationRepository invitationRepository, NoteRepository noteRepository,
+                                          UserRepository userRepository) {
         this.groupRepository = groupRepository;
         this.groupMembersRepository = groupMembersRepository;
         this.invitationRepository = invitationRepository;
@@ -55,7 +56,6 @@ public class NewPersistenceServerController {
             System.out.println("hey");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
     }
 
     @PutMapping("/group")
@@ -74,6 +74,19 @@ public class NewPersistenceServerController {
     public ResponseEntity<List<Membership>> getUserList(@PathVariable(value = "id") int id) {
         try {
             List<GroupMembersModel> groupMembersModelList = groupMembersRepository.findByGroupId(id);
+            List<Membership> membershipList = groupMembersModelList.stream().map(a ->
+                    new Membership(a.getId(), a.getUserModel().getId(), a.getGroupId(), a.getUserModel().getUsername())).collect(Collectors.toList());
+            return new ResponseEntity<>(membershipList, HttpStatus.OK);
+        } catch (Exception e) {
+            System.out.println("hey");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/groupmemberslist/{id}")
+    public ResponseEntity<List<Membership>> getMembershipList(@PathVariable(value = "id") int id) {
+        try {
+            List<GroupMembersModel> groupMembersModelList = groupMembersRepository.findByUserModel_Id(id);
             List<Membership> membershipList = groupMembersModelList.stream().map(a ->
                     new Membership(a.getId(), a.getUserModel().getId(), a.getGroupId(), a.getUserModel().getUsername())).collect(Collectors.toList());
             return new ResponseEntity<>(membershipList, HttpStatus.OK);
@@ -135,7 +148,7 @@ public class NewPersistenceServerController {
     @GetMapping("/note/{groupId}")
     public ResponseEntity<List<NoteModel>> getNote(@PathVariable(value = "groupId") long groupId) {
         try {
-            List<NoteModel> noteModelList = noteRepository.findByGroupModel_Id(groupId);
+            List<NoteModel> noteModelList = noteRepository.findByGroupModel_IdOrderByWeek(groupId);
             return new ResponseEntity<>(noteModelList, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -166,7 +179,6 @@ public class NewPersistenceServerController {
         }
     }
 
-
     @DeleteMapping("/invitation/{id}")
     public ResponseEntity<Void> deleteInvitation(@PathVariable(value = "id") long id) {
         try {
@@ -176,7 +188,6 @@ public class NewPersistenceServerController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-
 
     @DeleteMapping("/note/{noteId}")
     public ResponseEntity<Void> deleteNote(@PathVariable(value = "noteId") long noteId) {
@@ -188,7 +199,6 @@ public class NewPersistenceServerController {
         }
     }
 
-
     @DeleteMapping("/group/{id}")
     public ResponseEntity<Void> deleteGroup(@PathVariable(value = "id") long id) {
         try {
@@ -199,7 +209,6 @@ public class NewPersistenceServerController {
         }
     }
 
-
     @DeleteMapping("/user/{userId}")
     public ResponseEntity<Void> deleteUser(@PathVariable(value = "userId") long userId) {
         try {
@@ -209,7 +218,6 @@ public class NewPersistenceServerController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-
 
     @PostMapping("/user/{user_id}")
     public ResponseEntity<UserModel> EditUser(@RequestBody String json, @PathVariable(value = "user_id") int user_id) {
