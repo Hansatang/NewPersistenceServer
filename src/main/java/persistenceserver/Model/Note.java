@@ -2,10 +2,14 @@ package persistenceserver.Model;
 
 public class Note {
 
-   private int id,userId, groupId,week,year;
+   private long id,userId, groupId,week,year;
    private  String name, status, text;
 
-    public Note(int id, int userId, int groupId, int week, int year, String name, String status, String text) {
+   public Note(){
+
+   }
+
+    public Note(long id, long userId, long groupId, long week, long year, String name, String status, String text) {
         this.id = id;
         this.userId = userId;
         this.groupId = groupId;
@@ -16,19 +20,19 @@ public class Note {
         this.text = text;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
     public void setId(int id) {this.id = id;}
 
-    public int getUserId() {return userId;}
+    public long getUserId() {return userId;}
 
     public void setUserId(int userId) {
         this.userId = userId;
     }
 
-    public int getGroupId() {
+    public long getGroupId() {
         return groupId;
     }
 
@@ -36,7 +40,7 @@ public class Note {
         this.groupId = groupId;
     }
 
-    public int getWeek() {
+    public long getWeek() {
         return week;
     }
 
@@ -44,7 +48,7 @@ public class Note {
         this.week = week;
     }
 
-    public int getYear() {
+    public long getYear() {
         return year;
     }
 

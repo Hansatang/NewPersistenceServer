@@ -14,7 +14,7 @@ public interface GroupMembersRepository extends JpaRepository<GroupMembersModel,
     @Override
     List<GroupMembersModel> findAll();
 
-    List<GroupMembersModel> findByGroupId(int groupModelId);
+    List<GroupMembersModel> findByGroupModel_Id(long groupModelId);
 
-    List<GroupMembersModel> findByUserModel_Id(int groupModelId);
+    List<GroupMembersModel> findByUserModel_Id(long groupModelId);
 }

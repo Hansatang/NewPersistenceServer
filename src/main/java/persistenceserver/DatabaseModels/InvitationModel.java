@@ -1,8 +1,11 @@
 package persistenceserver.DatabaseModels;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
+
+
 
 @Data
 @Entity
@@ -10,7 +13,8 @@ import javax.persistence.*;
 public class InvitationModel {
 
     @Id
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     @ManyToOne
     @JoinColumn(name = "invitor_id")
     private UserModel invitor;
@@ -25,12 +29,9 @@ public class InvitationModel {
 
     }
 
-
     public InvitationModel(UserModel invitor, UserModel invitee, GroupModel groupModel) {
         this.invitor = invitor;
         this.invitee = invitee;
         this.groupModel = groupModel;
     }
-
-
 }

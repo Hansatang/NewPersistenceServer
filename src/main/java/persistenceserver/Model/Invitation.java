@@ -2,12 +2,12 @@ package persistenceserver.Model;
 
 public class Invitation
 {
-  private int id;
-  private int invitorId;
-  private int inviteeId;
-  private int groupId;
+  private long id;
+  private long invitorId;
+  private long inviteeId;
+  private long groupId;
 
-  public int getId()
+  public long getId()
   {
     return id;
   }
@@ -16,7 +16,7 @@ public class Invitation
     this.id = id;
   }
 
-  public int getInvitorId()
+  public long getInvitorId()
   {
     return invitorId;
   }
@@ -26,7 +26,7 @@ public class Invitation
     this.invitorId = invitorId;
   }
 
-  public int getInviteeId()
+  public long getInviteeId()
   {
     return inviteeId;
   }
@@ -36,7 +36,7 @@ public class Invitation
     this.inviteeId = inviteeId;
   }
 
-  public int getGroupId()
+  public long getGroupId()
   {
     return groupId;
   }
@@ -46,7 +46,7 @@ public class Invitation
     this.groupId = groupId;
   }
 
-  public Invitation(int id, int invitorId, int inviteeId, int groupId)
+  public Invitation(long id, long groupId, long inviteeId,long invitorId )
   {
     this.id = id;
     this.groupId = groupId;

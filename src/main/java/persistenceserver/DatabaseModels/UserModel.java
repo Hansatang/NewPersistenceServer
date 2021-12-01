@@ -1,11 +1,10 @@
 package persistenceserver.DatabaseModels;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 
 @Data
 @Entity
@@ -13,7 +12,8 @@ import javax.persistence.Table;
 public class UserModel {
 
     @Id
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     @Column(name = "firstname")
     private String firstName;
     @Column(name = "lastname")
