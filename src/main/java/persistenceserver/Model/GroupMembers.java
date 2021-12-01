@@ -3,12 +3,12 @@ package persistenceserver.Model;
 public class GroupMembers {
 
     private int Id, UserId, GroupId;
-    private String Username;
 
-    public GroupMembers(int id, int userId, String username, int groupId ) {
+
+    public GroupMembers(int id, int userId, int groupId ) {
         this.Id = id;
         this.UserId = userId;
-        this.Username = username;
+
         this.GroupId = groupId;
     }
 
@@ -36,12 +36,6 @@ public class GroupMembers {
         this.GroupId = groupId;
     }
 
-    public String getUsername() {
-        return Username;
-    }
 
-    public void setUsername(String username) {
-        this.Username = username;
-    }
 }
 

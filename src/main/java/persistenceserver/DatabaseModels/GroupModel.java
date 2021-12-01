@@ -1,19 +1,20 @@
 package persistenceserver.DatabaseModels;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.io.Serializable;
+
 
 @Data
 @Entity
 @Table(name = "groups", schema = "notelender")
 public class GroupModel {
     @Id
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     @Column(name = "groupname")
     private String name;
 
@@ -22,7 +23,6 @@ public class GroupModel {
     }
 
     public GroupModel(String name) {
-
         this.name = name;
     }
 

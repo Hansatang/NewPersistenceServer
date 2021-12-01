@@ -14,5 +14,8 @@ public interface NoteRepository extends JpaRepository<NoteModel, Long> {
     @Override
     List<NoteModel> findAll();
 
+    Optional<NoteModel> findById(long id);
+
+
     List<NoteModel>  findByGroupModel_IdOrderByWeek(Long group_id);
 }

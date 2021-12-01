@@ -1,8 +1,10 @@
 package persistenceserver.DatabaseModels;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
+
 
 @Data
 @Entity
@@ -10,22 +12,24 @@ import javax.persistence.*;
 public class GroupMembersModel {
 
     @Id
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserModel userModel;
 
-    @Column(name = "group_id")
-    private int groupId;
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    private GroupModel groupModel;
 
     public GroupMembersModel() {
 
     }
 
 
-    public GroupMembersModel(UserModel userModel, int groupId) {
+    public GroupMembersModel(UserModel userModel, GroupModel groupModel) {
         this.userModel = userModel;
-        this.groupId = groupId;
+        this.groupModel = groupModel;
     }
 
 }
